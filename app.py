@@ -177,6 +177,72 @@ button[data-baseweb="tab"] { font-size: 16px; padding: 10px 14px; }
 """, unsafe_allow_html=True)
 
 # ===========================
+# TÜRK BAYRAĞI VE ATATÜRK İMZASI (CSS TEMA GARANTİLİ)
+# ===========================
+st.markdown("""
+<style>
+/* Varsayılan olarak KOYU mod (Beyaz Yazı) */
+:root {
+    --branding-color: #ffffff;
+}
+
+/* Eğer kullanıcı AÇIK mod kullanıyorsa (Siyah Yazı) */
+@media (prefers-color-scheme: light) {
+    :root {
+        --branding-color: #000000;
+    }
+}
+
+/* Streamlit'in kendi açık tema sınıfları için ek garanti */
+[data-theme="light"] {
+    --branding-color: #000000;
+}
+
+.tr-branding {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.tr-flag-img {
+    width: 40px;
+    margin-bottom: 5px;
+}
+
+.ata-signature {
+    font-family: 'Dancing Script', cursive;
+    color: var(--branding-color); /* CSS değişkeni kullanıyoruz */
+    font-size: 22px;
+    opacity: 0.9;
+    margin-bottom: 2px;
+    transition: color 0.3s ease;
+}
+
+.made-in-text {
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--branding-color); /* CSS değişkeni kullanıyoruz */
+    opacity: 0.6;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+</style>
+
+<div class="tr-branding">
+    <img src="https://flagcdn.com/w80/tr.png" class="tr-flag-img">
+    <div class="ata-signature">K. Atatürk</div>
+    <div class="made-in-text">MADE IN TÜRKİYE</div>
+</div>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+""", unsafe_allow_html=True)
+
+# ===========================
 # OLLAMA MODELS
 # ===========================
 def get_local_models():
@@ -247,19 +313,59 @@ if idle_sec > IDLE_TIMEOUT_SEC and not st.session_state.get("session_ended"):
     log_event(st.session_state.session_id, "APP_OPEN", "Yeni oturum başladı")
 
 # ===========================
-# HEADER
+# ADAPTİF MODERN HEADER (RENK REVİZE)
 # ===========================
 st.markdown(f"""
-<div style="
-padding:18px 20px;
-border-radius:18px;
-background:linear-gradient(90deg,#0f172a,#1e293b);
-border:1px solid rgba(148,163,184,.18);
-margin-bottom:12px">
-<h1 style="margin:0;font-size:42px;">🤖 UsKut AI</h1>
-<p style="opacity:0.8;margin:6px 0 0 0;">
-{T[L]["caption"]}
-</p>
+<style>
+/* Header Ana Kutusu */
+.header-box {{
+    padding: 25px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}}
+
+/* UsKut AI Yazısı - Varsayılan (Koyu Tema) */
+.header-title {{
+    margin: 0;
+    font-size: 44px;
+    font-weight: 800;
+    /* Koyu temada daha ağırbaşlı, gümüşten koyu maviye geçiş */
+    background: linear-gradient(90deg, #f8fafc, #334155);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.3));
+}}
+
+/* Açık Tema Ayarları */
+@media (prefers-color-scheme: light) {{
+    .header-box {{
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }}
+    .header-title {{
+        /* Açık temada o sevdiğin canlı mavi kalsın veya daha net dursun */
+        background: linear-gradient(90deg, #1e40af, #3b82f6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }}
+    .header-box p {{ color: #475569 !important; }}
+}}
+
+.header-caption {{
+    margin-top: 10px;
+    font-size: 16px;
+    opacity: 0.85;
+    font-weight: 500;
+    color: #cbd5e1;
+}}
+</style>
+
+<div class="header-box">
+    <h1 class="header-title">🤖 UsKut AI</h1>
+    <p class="header-caption">{T[L]["caption"]}</p>
 </div>
 """, unsafe_allow_html=True)
 
