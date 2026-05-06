@@ -258,6 +258,31 @@ def get_local_models():
 LOCAL_MODELS = get_local_models()
 
 # ===========================
+# PDF CONTEXT FINDER
+# ===========================
+def find_relevant_chunks(text, question, chunk_size=1200, max_chunks=4):
+    words = [w.lower() for w in question.split() if len(w) > 3]
+
+    chunks = [
+        text[i:i + chunk_size]
+        for i in range(0, len(text), chunk_size)
+    ]
+
+    scored = []
+
+    for chunk in chunks:
+        score = sum(chunk.lower().count(w) for w in words)
+
+        if score >= 0:
+            scored.append((score, chunk))
+
+    scored.sort(reverse=True, key=lambda x: x[0])
+
+    return "\n\n---\n\n".join(
+        chunk for score, chunk in scored[:max_chunks]
+    )
+
+# ===========================
 # INIT LOG ONCE
 # ===========================
 if "log_inited" not in st.session_state:
@@ -512,12 +537,43 @@ with tab_pdf:
                             "If not found, say: 'This is not mentioned in the PDF.' Keep it short and clear."
                         )
 
-                    prompt = f"{sys}\n\nPDF TEXT:\n{st.session_state.pdf_text[:12000]}\n\nQUESTION:\n{question}\n\nANSWER:"
+                    
+                    context = find_relevant_chunks(
+                    st.session_state.pdf_text,
+                    question
+                    )
+
+                    if not context.strip():
+                        context = st.session_state.pdf_text[:4000]
+
+                    prompt = f"""
+                    {sys}
+
+                    Sadece aşağıdaki PDF metnine göre cevap ver.
+
+                    Eğer cevap PDF içinde yoksa:
+                    'Bu bilgi PDF'te geçmiyor.' yaz.
+
+                    Kesinlikle bilgi uydurma.
+
+                    PDF:
+                    {context}
+
+                    SORU:
+                    {question}
+
+                    CEVAP:
+                """
+
                     try:
                         resp = ollama.generate(
                             model=chat_model,
                             prompt=prompt,
-                            options={"num_predict": num_predict, "num_ctx": num_ctx, "temperature": float(temperature)},
+                            options={
+                                    "num_predict": 180,
+                                    "num_ctx": 2048,
+                                    "temperature": 0.1,
+                                },
                         )
                         answer = (resp.get("response") or "").strip()
                     except Exception as e:
