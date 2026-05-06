@@ -181,19 +181,16 @@ button[data-baseweb="tab"] { font-size: 16px; padding: 10px 14px; }
 # ===========================
 st.markdown("""
 <style>
-/* Varsayılan olarak KOYU mod (Beyaz Yazı) */
 :root {
     --branding-color: #ffffff;
 }
 
-/* Eğer kullanıcı AÇIK mod kullanıyorsa (Siyah Yazı) */
 @media (prefers-color-scheme: light) {
     :root {
         --branding-color: #000000;
     }
 }
 
-/* Streamlit'in kendi açık tema sınıfları için ek garanti */
 [data-theme="light"] {
     --branding-color: #000000;
 }
